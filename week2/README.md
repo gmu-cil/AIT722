@@ -1,7 +1,7 @@
 S&CC Data Sources and APIs
 ==============
-Myeong Lee
--------------
+##### Myeong Lee
+
 
 
 ## U.S. Census
@@ -9,7 +9,7 @@ Myeong Lee
 
 ## Geo-tagged Tweeter Data Collection
 - `Geo_twitter.R`
-- This file also visulzies the geo locations of Tweets on the map in R. 
+- This file also visulizes the geo locations of Tweets on the map in R. 
 
 ## Using QGIS to visualize QGIS
 - [QGIS Download](https://qgis.org/en/site/)
@@ -17,8 +17,8 @@ Myeong Lee
 - Load the CSV file and set the Lon/Lat columns for X and Y values.
 - The basemap can be loaded from the `Web->QuickMapServices` menu.
 
-## Other Community-related Resources
+## Other Community-related Data Resources
 - CDC 500 Cities data
 - Local governments' open data portal
 - Local event datasets (eventful.com, yelp.com)
-
+- [Geo Data Processing Carpentry](https://github.com/gmu-cil/geo-data-carpentry)
