@@ -18,8 +18,8 @@ setwd("~/git/AIT722/week3/")
 
 events <- read_delim("data/Meetup_Washington_DC_samples.csv", delim = ",",col_names = T)
 
-# We're using event description for quantifying cultural diversity.
-# to do so, it is necessary to process the description data. 
+# We're using event title and description for quantifying cultural diversity.
+# to do so, it is necessary to process the text data using NLP packages. 
 
 # function 1: getting name tokens after after preprocessing the text
 get_name_tokens <- function (event_df){
