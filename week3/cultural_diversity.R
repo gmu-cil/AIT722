@@ -135,7 +135,7 @@ doc_topic_distr = lda_model$fit_transform(x = dtm, n_iter = 1000,
                                           convergence_tol = 0.001, n_check_convergence = 25,
                                           progressbar = TRUE)
 
-# Visualizing topic models using LDAvis
+# Visualizing topic models using the LDAvis package
 lda_model$plot()
 
 
@@ -155,5 +155,6 @@ rao_stirling <- as.numeric(diversity(topic_scores, type="rao-stirling", dis=cos_
 shannon <- as.numeric(diversity(topic_scores, type="entropy"))
 hhi <- as.numeric(diversity(topic_scores, type="herfindahl-hirschman"))
 
-
-
+rao_stirling
+shannon
+hhi
