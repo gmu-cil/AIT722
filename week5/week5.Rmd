@@ -1,0 +1,151 @@
+---
+title: "Hexagon Layer Aggergation (AIT 722)"
+author: "Myeong Lee"
+output: html_document
+---
+This code is for processing and visualizing diverse geospatial polygons and aggregating from one layer to another when polygons are different. 
+
+```{r}
+library(ggmap)
+library(ggplot2)
+library(stringr)
+library(readr)
+library(dplyr)
+library(sp)
+library(rgeos)
+library(rgdal)
+library(raster)
+library(classInt)
+library(data.table)
+
+register_google(key="put_your_Google_Maps_API_key_here")
+```
+
+
+# Extracting Car2go's points data as SpatialPointsDataFrame
+```{r}
+setwd("~/git/AIT722/week5/data")
+
+total <- read_delim("car2go_samples.csv", delim = ",",col_names = T )
+total$ID <- row.names(total)
+total$ID <- as.integer(total$ID)
+xy <- total[,c("lon","lat")]
+points <- SpatialPointsDataFrame(coords = xy, data = total,
+                               proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+plot(points)
+```
+
+# Loading polygons from KML and Shapefiles + Viz
+```{r}
+
+# DC Boundary as a polygon
+dc_boundary <- readOGR("DC_Boundary/DC_Boundary.shp") %>% spTransform(CRS("+proj=longlat +datum=WGS84"))
+map <- get_map(location = 'Washinton DC', zoom = 11, color = "bw")
+mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group), 
+                                       data = dc_boundary, color='red', alpha=0) + ggtitle("DC Boundary")
+mapPoints
+
+# DC neighborhood boundaries 
+gov_cluster <- readOGR("dc_neighborhood_boundaries_GovClusters.kml", 
+                       layer="dc_neighborhood_boundaries_GovClusters") %>% 
+                      spTransform(CRS("+proj=longlat +datum=WGS84"))
+
+mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group), 
+                                       data = gov_cluster, color='red', alpha=0.5) + ggtitle("Gov Clusters")
+mapPoints
+
+```
+
+
+# Hexagon Generation (when want to come up with a new polygon layer)
+```{r}
+
+# Hexagons Generation
+cell_diameter <- 0.007 
+ext <- as(extent(dc_boundary) + cell_diameter, "SpatialPolygons")
+projection(ext) <- projection(dc_boundary)
+g <- spsample(ext, type = "hexagonal", cellsize = cell_diameter, offset = c(0.5, 0.5))
+hex_grid <- HexPoints2SpatialPolygons(g, dx = cell_diameter)
+hex_grid <- hex_grid[dc_boundary, ]
+
+
+# Change SpatialPolygons to SpatialPolygonsDataFrame
+row.names(hex_grid) <- as.character(1:length(hex_grid))
+pid <- sapply(slot(hex_grid, "polygons"), function(x) slot(x, "ID"))
+hex_df <- data.frame( ID=1:length(hex_grid), row.names = pid)
+hex_grid <- SpatialPolygonsDataFrame(hex_grid, hex_df)
+hex_transform <- fortify(hex_grid)
+
+mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group), data = hex_transform, color='red', alpha=0) + ggtitle("Hexagon Overlay")
+mapPoints
+
+# Saving Geospatial Polygons as GeoJSON (when you have a meaningful geospatial layer)
+writeOGR(hex_grid, "hexagons.geojson", layer="polygons", driver="GeoJSON", check_exists = FALSE)
+
+```
+
+
+
+# Iterating through SpatialPolygonsDataFrame (neighborhood boundaries) for point aggregation
+```{r}
+
+signature <- data.frame(matrix(ncol = 2, nrow = 0)) 
+colnames(signature) <- c("id", "freq")
+
+
+for(i in 1:nrow(hex_grid)) { 
+  
+  print(i)
+  
+  # Selecting points within the selected polygon (points --> polygon)
+  tryCatch({
+      intersection = raster::intersect(x = points, y = hex_grid[i,])
+    }, error = function(e) {
+      # add 0 for ids with no intersection
+    })
+  
+  
+  # If no intersection found, skip.
+  if (nrow(intersection@data) == 0) next
+  
+  intersection@data$id = i
+  freq_table <- intersection@data %>% dplyr::group_by(id) %>% summarise(freq=n())
+  
+  signature <- rbind(signature, freq_table)
+
+}
+
+
+```
+
+
+# Color Gradiation based on Freq (Polygon Viz as Density Map)
+```{r}
+
+temp_layer <- hex_grid
+row.names(temp_layer) <- as.character(1:length(temp_layer))
+temp_layer$ID <- row.names(temp_layer)
+
+signature$id <- as.character(signature$id)
+temp_layer@data <- temp_layer@data %>% left_join(signature, by = c("ID" = "id"))
+temp_layer@data$freq[is.na(temp_layer@data$freq)] <- 0
+
+lnd <- SpatialPolygonsDataFrame(Sr = spTransform(temp_layer, CRSobj = CRS("+init=epsg:4326")), data = temp_layer@data)
+lnd.f <- fortify(lnd)
+lnd$id <- row.names(lnd)
+lnd.f <- left_join(lnd.f, lnd@data, by=("id"))
+
+# Density Map
+map <- get_map(location = 'Washinton DC', zoom = 11, color = "bw")
+mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group, fill=(freq)), data = lnd.f , alpha=0.9) + scale_fill_continuous(low = "yellow", high = "red") + ggtitle("Hexagon Layer")
+mapPoints
+
+
+```
+
+
+* Clustering of the hexagon layers becomes possinble if you associate a layer (bag-of-words model) to each hexagon.
+* Then, you can group the hexagons together to show neighborhoods.
+* Class activities: 
+  (1) Write scripts to create a time-series data (24-hours array) for each hexagon.
+  (2) Run the K-means clustering.
