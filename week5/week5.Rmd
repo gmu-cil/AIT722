@@ -140,6 +140,7 @@ map <- get_map(location = 'Washinton DC', zoom = 11, color = "bw")
 mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group, fill=(freq)), data = lnd.f , alpha=0.9) + scale_fill_continuous(low = "yellow", high = "red") + ggtitle("Hexagon Layer")
 mapPoints
 
+writeOGR(lnd, "hexagons_freq.geojson", layer="polygons", driver="GeoJSON", check_exists = FALSE)
 
 ```
 
