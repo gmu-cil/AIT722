@@ -49,3 +49,5 @@ data <- tweetbotornot(users)
 ## arrange by prob ests
 head(data[order(-data$prob_bot), ])
 
+# what about yours?
+tweetbotornot(c("your_twitter_handle"))
