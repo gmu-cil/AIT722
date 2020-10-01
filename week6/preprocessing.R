@@ -42,6 +42,7 @@ corona_tweets$text <- gsub("\\s+"," ",corona_tweets$text)
 
 ## select users
 users <- corona_tweets$screen_name
+users <- unique(users)
 
 ## get botornot estimates
 data <- tweetbotornot(users)
@@ -51,3 +52,9 @@ head(data[order(-data$prob_bot), ])
 
 # what about yours?
 tweetbotornot(c("your_twitter_handle"))
+
+# Futher class activites 
+# 1. try to collect 10,000 tweets about particular topic.
+# 2. remove duplicate users 
+# 3. create a network of these users.
+# 4. see how the networks look different before and after removing bots. 
