@@ -56,7 +56,7 @@ for (i in 1:nrow(events)){
 # merging topics to venues: "events or activities"
 venues <- venues %>% left_join(events[,c("venue_id", "topic")], by=c("venue_id"))
 
-clusters <- kmeans(venues, 5)
+clusters <- kmeans(venues[,2:4], 5)
 venues$cluster <- clusters$cluster
 venues$cluster <- as.factor(venues$cluster)
 
