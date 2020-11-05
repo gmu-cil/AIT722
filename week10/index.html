@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>Leaflet Test</title>
+<link rel="stylesheet" href="leaflet/leaflet.css" />
+<link rel="stylesheet" href="leaflet_draw/leaflet.draw.css" />
+<link rel="stylesheet" href="css/global.css" />
+<script src="leaflet/leaflet-src.js"></script>
+<script src="leaflet_draw/leaflet.draw.js"></script>
+
+
+</head>
+
+<body>
+	<div> Hello Map </div>
+	<div id="map"></div>
+	<script>
+
+	var map = L.map('map').setView([38.831, -77.307], 13);
+
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+
+
+	var drawnItems = new L.FeatureGroup();
+	map.addLayer(drawnItems);
+
+	// Initialise the draw control and pass it the FeatureGroup of editable layers
+	var drawControl = new L.Control.Draw({
+	    edit: {
+	        featureGroup: drawnItems
+	    }
+	});
+	map.addControl(drawControl);
+
+	var popup = L.popup();
+
+	map.on('draw:created', function (e) {
+	    var type = e.layerType,
+	        layer = e.layer;
+
+	    console.log(type);
+	    if (type === 'marker') {
+	        // Do marker specific actions
+	        console.log(layer._latlng);
+	      
+		} else {
+			console.log(e.layer);
+		}
+
+	    // Do whatever else you need to. (save to db, add to map etc)
+	    drawnItems.addLayer(layer);
+	});
+
+	map.on('draw:edited', function () {
+	    // Update db to save latest changes.
+	});
+
+	map.on('draw:deleted', function () {
+	    // Update db to save latest changes.
+	});
+
+</script>
+</body>
+
+</html>
