@@ -21,7 +21,7 @@
     	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 	}).addTo(map);
 
-
+	// Adding drawing
 	var drawnItems = new L.FeatureGroup();
 	map.addLayer(drawnItems);
 
@@ -35,6 +35,8 @@
 
 	var popup = L.popup();
 
+
+	// defining the functions after drawings are generated.	
 	map.on('draw:created', function (e) {
 	    var type = e.layerType,
 	        layer = e.layer;
@@ -59,6 +61,8 @@
 	map.on('draw:deleted', function () {
 	    // Update db to save latest changes.
 	});
+
+
 
 </script>
 </body>
