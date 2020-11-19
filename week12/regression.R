@@ -1,15 +1,6 @@
 library(stringr)
 library(readr)
 library(dplyr)
-require(utils)
-library(reshape2)
-library(caret)
-library(rpart)
-library(ggplot2)
-library(tidyr)
-library(scales)
-library(lmerTest)
-library("Hmisc")
 library("PerformanceAnalytics")
 
 
