@@ -22,3 +22,17 @@ S&CC Data Sources and APIs
 - Local governments' open data portal
 - Local event datasets (eventful.com, yelp.com)
 - [Geo Data Processing Carpentry](https://github.com/gmu-cil/geo-data-carpentry)
+
+
+## Jekyll Hello World
+- Jekyll Official Website: [Jekyll](https://jekyllrb.com/)
+- Setting up Github pages: https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll
+```
+gem install bundler jekyll
+
+jekyll new my-awesome-site
+
+cd my-awesome-site
+
+bundle exec jekyll serve
+```
