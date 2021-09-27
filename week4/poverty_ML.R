@@ -26,7 +26,7 @@ colnames(cluster3) <- c("SEZ2011", "cluster3") #these clusters are based on temp
 colnames(census)[9] <- "dep11"
 colnames(census)[10] <- "dep01"
 
-# poverty level in 7 bins -- making this as a classification problme
+# poverty level in 7 bins -- making this as a classification problem
 census$dep_class_7 <- as.factor(census$dep_class_7)
 
 # selecting only needed variables
@@ -57,13 +57,17 @@ testset <- testset[!is.na(testset$calls) & !is.na(testset$page_rank) & !is.na(te
                      !is.na(testset$closeness)& !is.na(testset$betweenness),]
 
 # feature importance
-importance(model)
+importance(model, type=1)
+varImpPlot(model)
+# Mean Decrease Accuracy: how much accuracy the model losses by excluding each variable.
+# Mean Decrease in Gini: how much each variable contributes to the homogeneity of the nodes and leaves in the resulting RF.
 
 # running the prediction
 pred <- predict(model,testset)
 
 
 # performance measures
+summary(target$dep_class_7)
 tb <- as.matrix(table(Actual = testset$dep_class_7, Predicted = pred)) # confusion matrix
 tb 
 n = sum(tb)
@@ -79,3 +83,4 @@ F1
 mean(F1, na.rm = TRUE)
 
 # can you boost the performance using these features?
+# can you make this as a regression problem and report the ML performance?
