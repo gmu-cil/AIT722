@@ -28,7 +28,7 @@ twitter_token <- create_token(
   access_token = access_token,
   access_secret = access_secret)
 
-corona_tweets <- search_tweets(q="#Coronavirus", n=100, include_rts = FALSE, lang = "en")
+corona_tweets <- search_tweets(q="#Coronavirus", n=50, include_rts = FALSE, lang = "en")
 corona_tweets <- corona_tweets[,1:16]
 
 corona_tweets$text <- iconv(corona_tweets$text, from = 'UTF-8', to = 'ASCII//TRANSLIT')
