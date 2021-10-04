@@ -7,7 +7,7 @@ library(PerformanceAnalytics)
 library(rtweet)
 library(tweetbotornot) # library from https://github.com/mkearney/tweetbotornot
 
-setwd("~/git/AIT722/week6/data")
+setwd("~/git/AIT722/week6/")
 
 
 ####################
