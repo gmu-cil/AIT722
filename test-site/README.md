@@ -22,3 +22,7 @@ Make any nessary changes in Layout html files.
 * `_layouts/home.html`: overrides the homepage contents (which is in `contents` in `default.html`).
 * `_layouts/post.html`: overrides the blog posting page.
 
+Markdown files in the root directory (`xx.md`) can define pages with custom sub-URLs. 
+In the markdown file, you can specify `title` and `permalink` that are stored in the `site` or `page` variable.
+For accessing particular variables, see [https://jekyllrb.com/docs/variables/](https://jekyllrb.com/docs/variables/).
+
