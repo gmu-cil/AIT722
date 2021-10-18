@@ -16,3 +16,9 @@ To apply a new Layout, copy the files from `resources` to the `my-awesome-site` 
 Make any nessary changes in Layout html files.
 
 
+# Navigation
+`_layouts` defines basic HTML structures in the Jekyll page
+* `_layouts/default.html`: the overarching page structure, that includes `header`, `contents`, and `footer`.
+* `_layouts/home.html`: overrides the homepage contents (which is in `contents` in `default.html`).
+* `_layouts/post.html`: overrides the blog posting page.
+
