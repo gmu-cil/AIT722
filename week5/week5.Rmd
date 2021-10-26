@@ -40,9 +40,10 @@ plot(points)
 
 # DC Boundary as a polygon
 dc_boundary <- readOGR("DC_Boundary/DC_Boundary.shp") %>% spTransform(CRS("+proj=longlat +datum=WGS84"))
+
 map <- get_map(location = 'Washinton DC', zoom = 11, color = "bw")
 mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group), 
-                                       data = dc_boundary, color='red', alpha=0) + ggtitle("DC Boundary")
+                                       data = dc_boundary, color='red', alpha=0.5) + ggtitle("DC Boundary")
 mapPoints
 
 # DC neighborhood boundaries 
@@ -72,8 +73,9 @@ hex_grid <- hex_grid[dc_boundary, ]
 # Change SpatialPolygons to SpatialPolygonsDataFrame
 row.names(hex_grid) <- as.character(1:length(hex_grid))
 pid <- sapply(slot(hex_grid, "polygons"), function(x) slot(x, "ID"))
-hex_df <- data.frame( ID=1:length(hex_grid), row.names = pid)
+hex_df <- data.frame( hex_ID=1:length(hex_grid), row.names = pid)
 hex_grid <- SpatialPolygonsDataFrame(hex_grid, hex_df)
+hex_grid@data$area <- area(hex_grid)
 hex_transform <- fortify(hex_grid)
 
 mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group), data = hex_transform, color='red', alpha=0) + ggtitle("Hexagon Overlay")
@@ -85,10 +87,18 @@ writeOGR(hex_grid, "hexagons.geojson", layer="polygons", driver="GeoJSON", check
 ```
 
 
-
 # Iterating through SpatialPolygonsDataFrame (neighborhood boundaries) for point aggregation
 ```{r}
 
+# Intersecting between two layers to aggregate points to the polygon layer.
+intersections <- raster::intersect(x = points, y = hex_grid)
+point_counts <- intersections@data %>% group_by(hex_ID) %>% 
+  summarise(n=n(), ave_fuel=mean(fuel))
+hex_grid@data <- hex_grid@data %>% left_join(point_counts, by=c("hex_ID"))
+View(hex_grid@data)
+
+
+# Another way.. using a FOR loop to traverse different hexagons
 signature <- data.frame(matrix(ncol = 2, nrow = 0)) 
 colnames(signature) <- c("id", "freq")
 
