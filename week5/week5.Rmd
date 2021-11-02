@@ -91,11 +91,34 @@ writeOGR(hex_grid, "hexagons.geojson", layer="polygons", driver="GeoJSON", check
 ```{r}
 
 # Intersecting between two layers to aggregate points to the polygon layer.
-intersections <- raster::intersect(x = points, y = hex_grid)
-point_counts <- intersections@data %>% group_by(hex_ID) %>% 
-  summarise(n=n(), ave_fuel=mean(fuel))
-hex_grid@data <- hex_grid@data %>% left_join(point_counts, by=c("hex_ID"))
-View(hex_grid@data)
+gov_cluster@data$polygon_id <- 1:nrow(gov_cluster@data)
+intersections <- raster::intersect(x = points, y = gov_cluster)
+
+point_counts <- intersections@data %>% group_by(polygon_id) %>% 
+  summarise(num_car_locations=n(), ave_fuel=mean(fuel))
+
+gov_cluster@data <- gov_cluster@data %>% left_join(point_counts, by=c("polygon_id"))
+
+writeOGR(gov_cluster, "car2go_num_points.geojson", layer="polygons", driver="GeoJSON", check_exists = FALSE)
+
+# For visualizing... you have to use `fortify` the followings..
+lnd.f <- fortify(gov_cluster)
+gov_cluster$id <- row.names(gov_cluster)
+lnd.f <- left_join(lnd.f, gov_cluster@data, by=("id"))
+
+# Density Map
+map <- get_map(location = 'Washinton DC', zoom = 11, color = "bw")
+mapPoints <- ggmap(map) + 
+  geom_polygon(aes(x=long, y=lat, group=group,
+                   fill=num_car_locations), data = lnd.f ,
+               alpha=0.9) + 
+  scale_fill_continuous(low = "yellow", high = "red") + ggtitle("The number of cars")
+mapPoints
+
+
+
+
+
 
 
 # Another way.. using a FOR loop to traverse different hexagons
