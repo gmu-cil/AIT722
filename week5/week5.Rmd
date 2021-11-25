@@ -18,15 +18,17 @@ library(raster)
 library(classInt)
 library(data.table)
 
-register_google(key="put_your_Google_Maps_API_key_here")
+setwd("D:/GitHub/AIT722/week5/data")
+register_google(key='AIzaSyAanFoWwtldBOuq91AefwLwSGNJVFkUQwM')
+#ggmap::register_google(key ='AIzaSyAmd1LCccpS67KWcVCc3OEZd8Yg8aj6DmQ')
+get_googlemap("Fairfax County,VA", zoom = 12) %>% ggmap()
 ```
 
 
 # Extracting Car2go's points data as SpatialPointsDataFrame
 ```{r}
-setwd("~/git/AIT722/week5/data")
 
-total <- read_delim("car2go_samples.csv", delim = ",",col_names = T )
+total <- read_delim("data/car2go_samples.csv", delim = ",",col_names = T )
 total$ID <- row.names(total)
 total$ID <- as.integer(total$ID)
 xy <- total[,c("lon","lat")]
@@ -39,15 +41,15 @@ plot(points)
 ```{r}
 
 # DC Boundary as a polygon
-dc_boundary <- readOGR("DC_Boundary/DC_Boundary.shp") %>% spTransform(CRS("+proj=longlat +datum=WGS84"))
+dc_boundary <- readOGR("data/DC_Boundary/DC_Boundary.shp") %>% spTransform(CRS("+proj=longlat +datum=WGS84"))
 
-map <- get_map(location = 'Washinton DC', zoom = 11, color = "bw")
+map <- get_map(location = 'Washington DC', zoom = 11, color = "bw")
 mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group), 
                                        data = dc_boundary, color='red', alpha=0.5) + ggtitle("DC Boundary")
 mapPoints
 
 # DC neighborhood boundaries 
-gov_cluster <- readOGR("dc_neighborhood_boundaries_GovClusters.kml", 
+gov_cluster <- readOGR("data/dc_neighborhood_boundaries_GovClusters.kml", 
                        layer="dc_neighborhood_boundaries_GovClusters") %>% 
                       spTransform(CRS("+proj=longlat +datum=WGS84"))
 
@@ -91,19 +93,20 @@ writeOGR(hex_grid, "hexagons.geojson", layer="polygons", driver="GeoJSON", check
 ```{r}
 
 # Intersecting between two layers to aggregate points to the polygon layer.
-gov_cluster@data$polygon_id <- 1:nrow(gov_cluster@data)
+gov_cluster@data$polygon_id <- 1:nrow(gov_cluster@data) # Add "polygon_id" to gov_cluster SpatialPolygonsDataFrame
 intersections <- raster::intersect(x = points, y = gov_cluster)
 
 point_counts <- intersections@data %>% group_by(polygon_id) %>% 
   summarise(num_car_locations=n(), ave_fuel=mean(fuel))
 
 gov_cluster@data <- gov_cluster@data %>% left_join(point_counts, by=c("polygon_id"))
+view(hex_grid@data)
 
 writeOGR(gov_cluster, "car2go_num_points.geojson", layer="polygons", driver="GeoJSON", check_exists = FALSE)
 
 # For visualizing... you have to use `fortify` the followings..
 lnd.f <- fortify(gov_cluster)
-gov_cluster$id <- row.names(gov_cluster)
+gov_cluster$id <- row.names(gov_cluster) # Add "id" 
 lnd.f <- left_join(lnd.f, gov_cluster@data, by=("id"))
 
 # Density Map
