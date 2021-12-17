@@ -311,12 +311,12 @@ table {
 .media-heading a{
   font-size: 15px;
   vertical-align: baseline;
-  margin-left: 10px;
+  margin-left: 0px;
 }
 
 div.media-heading{
   font-size: 20px;  
-  margin: 0 0 10px 160px;
+  margin: 0 30px 20px 70px;
 }
 
 div.comment{
@@ -334,10 +334,28 @@ div.comment{
 }
 
 div.year {
-  width: 155px;
-  padding-right: 20px;
+  min-width: 155px;
+  padding-left: 20px;
   font-size: 20px;
-  color: red;  
-  min-height: 47px;
-  float: left;
+  color: orange;  
+  min-height: 20px;
+}
+
+span.semester {
+  min-width: 155px;
+  padding-left: 20px;
+  font-size: 15px;
+  font-style: italic;
+  color: black;
+  min-height: 20px;
+}
+
+h3.sub{
+  line-height: 30px;
+  font-style: italic;
+}
+
+img.footer-img{
+  width: 120px;
+  margin-right: 20px;
 }

@@ -9,9 +9,9 @@
       <div class="footer-col footer-col-1">
         <ul class="contact-list">
           <li class="p-name">
-            Actually, this is from the footer file.<br>
-            {%- if site.author -%}
-              {{ site.author | escape }}
+            <img class="footer-img" src="assets/mason.png">
+            {%- if site.description -%}
+              {{ site.description | escape }}
             {%- else -%}
               {{ site.title | escape }}
             {%- endif -%}

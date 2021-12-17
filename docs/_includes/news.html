@@ -9,11 +9,13 @@
                
             {% if item.year %}
               <div class="year">
-                {{ item.year }}
+                {{ item.year }} <span class="semester">
+                {{ item.semester }}</span>
               </div>
             {% endif %}
+            
             <div class="media-heading">
-              <strong>{{ item.description }}</strong>
+              {{ item.description }}
 
               {% if item.link %}
                 <a href="{{ item.link }}" target="_blank">Link</a>
