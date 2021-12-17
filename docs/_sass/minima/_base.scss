@@ -104,10 +104,14 @@ h1, h2, h3, h4, h5, h6 {
  * Links
  */
 a {
-  color: black;
+  color: $brand-color;
   text-decoration: none;
-  padding: 0;
+  padding: 1px;
   border-radius: 2px;
+
+  .footer-col &:hover {
+    text-decoration: underline;
+  }
 
   .social-media-list &:hover {
     text-decoration: none;
@@ -118,6 +122,9 @@ a {
   }
 }
 
+div.footer-col-2{
+  margin-top: 23px;
+}
 
 /**
  * Blockquotes
