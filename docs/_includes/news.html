@@ -10,15 +10,15 @@
             {% if item.year %}
               <div class="year">
                 {{ item.year }} <span class="semester">
-                {{ item.semester }}</span>
+                {{item.semester }}</span>
               </div>
             {% endif %}
             
             <div class="media-heading">
-              {{ item.description }}
+              
 
               {% if item.link %}
-                <a href="{{ item.link }}" target="_blank">Link</a>
+                <a href="{{ item.link }}" target="_blank">{{item.description }}</a>
               {% endif %}
 
               {% if item.comment %}
