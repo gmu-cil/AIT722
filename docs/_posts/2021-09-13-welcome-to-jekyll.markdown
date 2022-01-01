@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Welcome to My Jekyll!"
+title:  "Welcome to Edgar Arguello's Jekyll!"
 date:   2021-09-12 15:58:51 -0400
 categories: jekyll update
 ---
