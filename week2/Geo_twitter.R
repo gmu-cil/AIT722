@@ -18,7 +18,7 @@ income_virginia <- read.csv("data/acs2020_virginia.csv")
 ####################
 # Collect geo-tagged Twitter data. 
 ####################
-Sys.setenv(BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAPYMggEAAAAAuE28RaHJwVFYOMpM%2F8kXpUkjk3k%3DavZGN7oLa7U53SUortZhleRvnV3SyNIwwsguVPeLjtO2EN6FW5")
+Sys.setenv(BEARER_TOKEN = "your_bearer_token")
 bearer_token <- Sys.getenv("BEARER_TOKEN")
 headers <- c(`Authorization` = sprintf('Bearer %s', bearer_token))
 
