@@ -22,6 +22,7 @@ events <- read_delim("data/Meetup_Washington_DC_samples.csv", delim = ",",col_na
 # to do so, it is necessary to process the text data using NLP packages. 
 
 # function 1: getting name tokens after after preprocessing the text
+
 get_name_tokens <- function (event_df){
   tidy_events <- event_df %>% dplyr::select(event_id, name)
   tidy_events <- tidy_events[,c("event_id", "name")]
@@ -65,6 +66,9 @@ get_description_tokens <- function (event_df){
   
   tidy_events
 }
+
+# "he" showed up two times -> first element of a vector
+# "concert" showed up five times -> second element of a vector
 
 # function 3: returning title and description of events as "bag of words"
 get_bag_of_words <- function(events){
@@ -126,7 +130,7 @@ vectorizer = vocab_vectorizer(v)
 dtm = create_dtm(it, vectorizer)
 
 # Topic modeling using LDA: currently we set the number of topics as 10. 
-k = 10
+k = 7
 a = 0.2
 t = 0.07
 

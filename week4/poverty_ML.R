@@ -82,5 +82,10 @@ F1 <- (2 * precision * recall) / (precision + recall)
 F1
 mean(F1, na.rm = TRUE)
 
+
+summary(lm(dep11 ~ spatial_lag_square + closeness, 
+           data=trainset))
+
 # can you boost the performance using these features?
 # can you make this as a regression problem and report the ML performance?
+

@@ -2,6 +2,8 @@
 title: "Hexagon Layer Aggergation (AIT 722)"
 author: "Myeong Lee"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 This code is for processing and visualizing diverse geospatial polygons and aggregating from one layer to another when polygons are different. 
 
@@ -39,11 +41,12 @@ plot(points)
 ```{r}
 
 # DC Boundary as a polygon
-dc_boundary <- readOGR("DC_Boundary/DC_Boundary.shp") %>% spTransform(CRS("+proj=longlat +datum=WGS84"))
+dc_boundary <- readOGR("DC_Boundary/DC_Boundary.shp") %>% 
+  spTransform(CRS("+proj=longlat +datum=WGS84"))
 
 map <- get_map(location = 'Washinton DC', zoom = 11, color = "bw")
 mapPoints <- ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group), 
-                                       data = dc_boundary, color='red', alpha=0.5) + ggtitle("DC Boundary")
+                                       data = dc_boundary, color='blue', alpha=0.1) + ggtitle("DC Boundary")
 mapPoints
 
 # DC neighborhood boundaries 
