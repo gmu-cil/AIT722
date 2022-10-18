@@ -55,6 +55,28 @@ geo_data <- rrapply::rrapply(json$includes, how = "flatten")
 write(toJSON(json$includes), "data/tweet_geo.json")
 
 
+## 3. Full Archive Search
+
+params = list(
+  `query` = 'from:twitterdev lang:en',
+  `max_results` = '10',
+  `tweet.fields` = 'created_at,lang,context_annotations'
+)
+
+response <- httr::GET(url = 'https://api.twitter.com/2/tweets/search/all', httr::add_headers(.headers=headers), query = params)
+
+fas_body <-
+  content(
+    response,
+    as = 'parsed',
+    type = 'application/json',
+    simplifyDataFrame = TRUE
+  )
+
+View(fas_body$data)
+
+
+
 #############################################
 # Old Code: Twitter API Version 1 (doesn't work in V2)
 twitter_token <- create_token(
