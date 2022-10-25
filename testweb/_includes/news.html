@@ -1,0 +1,35 @@
+{% assign data = site.data %}
+{% if data.chronicles %}
+  
+  {% assign news = data.chronicles %}
+  
+  {% for item in news %}  
+    <div class="col-md-6">
+      <div class="row">
+               
+            {% if item.year %}
+              <div class="year">
+                {{ item.year }} <span class="semester">
+                {{item.semester }}</span>
+              </div>
+            {% endif %}
+            
+            <div class="media-heading">
+              
+
+              {% if item.link %}
+                <a href="{{ item.link }}" target="_blank">{{item.description }}</a>
+              {% endif %}
+
+              {% if item.comment %}
+                <div class="comment">
+                  {{ item.comment }}
+                </div>
+              {% endif %}
+
+            </div>          
+                
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}

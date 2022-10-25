@@ -62,5 +62,5 @@ venues$cluster <- as.factor(venues$cluster)
 
 map <- get_map(location = 'Washinton DC', zoom = 11, color = "bw")
 mapPoints <- ggmap(map) + 
-  geom_point(aes(x=lon, y=lat, color=cluster), data = venues[,c("lon", "lat", "cluster")], alpha=1) + ggtitle("clusters")
+  geom_point(aes(x=lon, y=lat, color=cluster, size=4), data = venues[,c("lon", "lat", "cluster")], alpha=1) + ggtitle("clusters")
 mapPoints
