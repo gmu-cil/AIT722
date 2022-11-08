@@ -27,8 +27,6 @@ points <- SpatialPointsDataFrame(coords = xy, data = total,
 gov_cluster <- readOGR("dc_neighborhood_boundaries_GovClusters.kml", 
                        layer="dc_neighborhood_boundaries_GovClusters") %>% 
   spTransform(CRS("+proj=longlat +datum=WGS84"))
-# ggmap(map) + geom_polygon(aes(x=long, y=lat, group=group),
-#                          data = gov_cluster, color='red', alpha=0.5) + ggtitle("Gov Clusters")
 
 # Intersecting between two layers to aggregate points to the polygon layer.
 gov_cluster@data$polygon_id <- 1:nrow(gov_cluster@data)
@@ -37,9 +35,12 @@ point_counts <- intersections@data %>% group_by(polygon_id) %>%
   summarise(num_car_locations=n(), ave_fuel=mean(fuel))
 gov_cluster@data <- gov_cluster@data %>% left_join(point_counts, by=c("polygon_id"))
 
+plot(gov_cluster)
+
 
 ###### Imortant part
 ###### Clifford and Richardson's t-test considering spatial correlation.
 trueCentroids = gCentroid(gov_cluster, byid=TRUE)
+plot(trueCentroids)
 modified.ttest(gov_cluster@data$num_car_locations, gov_cluster@data$ave_fuel, coords = trueCentroids@coords)
 cor.test(gov_cluster@data$num_car_locations, gov_cluster@data$ave_fuel)
