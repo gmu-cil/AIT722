@@ -309,6 +309,7 @@ table {
   font-size: 25px;
   vertical-align: baseline;
   color: $brand-color;
+  font-weight: 300;
 }
 
 div.media-heading{
@@ -345,9 +346,8 @@ div.year {
 
 span.semester {
   min-width: 155px;
-  padding-left: 20px;
-  font-size: 15px;
-  font-style: italic;
+  padding-right: 10px;
+  font-weight: 200;
   color: black;
   min-height: 20px;
 }
